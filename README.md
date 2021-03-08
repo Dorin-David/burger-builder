@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# React Burger Builder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was built while following Maximilian Schwarzmüller's course on React.js. You can find the course [here](https://www.udemy.com/course/react-the-complete-guide-incl-redux/). Right now the app misses the back-end part. 
+
+The project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
