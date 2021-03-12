@@ -1,6 +1,7 @@
 import React from 'react'
 import classes from './Burger.module.css';
-import BurgerIngredient from './BurgerIngredient/BurgerIngredient'
+import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
+// import {withRouter} from 'react-router-dom'
 const burger = props => {
 
   let passedIngredients = props.ingredients;
@@ -13,7 +14,6 @@ const burger = props => {
     }
   }
   if (burger.length === 0) burger = <p>Please start adding ingredients</p>
-
   return (
     <div className={classes.Burger}>
       <BurgerIngredient type='bread-top' />

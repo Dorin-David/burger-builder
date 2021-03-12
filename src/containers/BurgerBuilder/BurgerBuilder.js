@@ -18,18 +18,22 @@ const INGREDIENTS_PRICES = {
 class BurgerBuilder extends Component {
 
     state = {
-        ingredients: {
-            salad: 0,
-            tomato: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0,
-        },
+        ingredients: null,
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        error: false
 
+    }
+    componentDidMount() {
+        axios.get('https://react-burger-builder-7e9c0-default-rtdb.firebaseio.com/ingredients.json')
+            .then(res => {
+                this.setState({ ingredients: res.data })
+            })
+            .catch(err => {
+                this.setState({ error: true })
+            })
     }
 
     updatePurchaseState(ingredients) {
@@ -77,33 +81,19 @@ class BurgerBuilder extends Component {
         this.setState({ purchasing: false })
     }
 
-    continuePurchasing = () => {
-        //show spinner if order takes to much
-        this.setState({loading: true})
-
-        const currentOrder = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Dorio',
-                address: {
-                    street: 'Costello 312',
-                    zipCode: '43051',
-                    country: 'Italy'
-                },
-                email: 'myEmail@mail.com',
-                payment: 'cash'
-            },
-            deliveryType: 'standart',
+    continuePurchasing = () => { 
+        const queryParameters = [];
+        for(let key in this.state.ingredients){
+            queryParameters.push(encodeURIComponent(key) + '=' + encodeURIComponent(this.state.ingredients[key]))
         }
-        // we've got the base url set in our axios instance
-        axios.post('/orders.json', currentOrder)
-        .then(res => {
-            this.setState({loading: false, purchasing: false})
+        queryParameters.push('totalPrice=' + this.state.totalPrice)
+    
+        const queryString = queryParameters.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
         })
-        .catch(rej => {
-            this.setState({loading: false, purchasing: false})
-        })
+
     }
 
     render() {
@@ -115,17 +105,11 @@ class BurgerBuilder extends Component {
             isItemPositive[item] = isItemPositive[item] <= 0;
         }
 
-        return (
-            <Fragment>
-                <Modal showModal={this.state.purchasing} closeModal={this.cancelPurchasing}>
-                    {this.state.loading ? <Spinner />
-                    : <OrderSummary
-                    ingredients={this.state.ingredients}
-                    cancelPurchasing={this.cancelPurchasing}
-                    continuePurchasing={this.continuePurchasing}
-                    totalPrice={this.state.totalPrice}
-                />}
-                    </Modal>
+        let orderSummary = null;
+        let burger = this.state.error ? <h2 style={{ textAlign: 'center', color: '#ca3737' }}>An error occurred</h2>
+                                      : <Spinner />;
+        if (this.state.ingredients) {
+            burger = (<Fragment>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
                     addIngredient={this.addIngredientHandler}
@@ -135,6 +119,24 @@ class BurgerBuilder extends Component {
                     isPurchasable={this.state.purchasable}
                     purchasing={this.purchaseHandler}
                 />
+            </Fragment>);
+            orderSummary = (<OrderSummary
+                ingredients={this.state.ingredients}
+                cancelPurchasing={this.cancelPurchasing}
+                continuePurchasing={this.continuePurchasing}
+                totalPrice={this.state.totalPrice}
+            />)
+        }
+        if (this.state.loading) {
+            orderSummary = <Spinner />
+        }
+
+        return (
+            <Fragment>
+                <Modal showModal={this.state.purchasing} closeModal={this.cancelPurchasing}>
+                    {orderSummary}
+                </Modal>
+                {burger}
             </Fragment>
         )
     }
