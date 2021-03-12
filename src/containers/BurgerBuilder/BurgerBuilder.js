@@ -83,31 +83,47 @@ class BurgerBuilder extends Component {
 
     continuePurchasing = () => {
         //show spinner if order takes to much
-        this.setState({ loading: true })
+        // this.setState({ loading: true })
 
-        const currentOrder = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice.toFixed(2),
-            customer: {
-                name: 'Dorio',
-                address: {
-                    street: 'Costello 312',
-                    zipCode: '43051',
-                    country: 'Italy'
-                },
-                email: 'myEmail@mail.com',
-                payment: 'cash'
-            },
-            deliveryType: 'standart',
+        // const currentOrder = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice.toFixed(2),
+        //     customer: {
+        //         name: 'Dorio',
+        //         address: {
+        //             street: 'Costello 312',
+        //             zipCode: '43051',
+        //             country: 'Italy'
+        //         },
+        //         email: 'myEmail@mail.com',
+        //         payment: 'cash'
+        //     },
+        //     deliveryType: 'standart',
+        // }
+        // // we've got the base url set in our axios instance
+        // axios.post('/orders.json', currentOrder)
+        //     .then(res => {
+        //         this.setState({ loading: false, purchasing: false })
+        //     })
+        //     .catch(rej => {
+        //         this.setState({ loading: false, purchasing: false })
+        //     })
+         
+        const queryParameters = [];
+        for(let key in this.state.ingredients){
+            queryParameters.push(encodeURIComponent(key) + '=' + encodeURIComponent(this.state.ingredients[key]))
         }
-        // we've got the base url set in our axios instance
-        axios.post('/orders.json', currentOrder)
-            .then(res => {
-                this.setState({ loading: false, purchasing: false })
-            })
-            .catch(rej => {
-                this.setState({ loading: false, purchasing: false })
-            })
+    
+        const queryString = queryParameters.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        })
+
+        // this.props.history.push({
+        //     pathname: '/checkout'
+        // })
+
     }
 
     render() {
