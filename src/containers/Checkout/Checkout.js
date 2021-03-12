@@ -1,22 +1,31 @@
 import { Component } from "react";
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 // import axios from '../../axios-orders';
+import { Route } from 'react-router-dom';
+import ContactData from '../Checkout/ContactData/ContactData';
 
 class Checkout extends Component {
     state = {
-        ingredients: null
+        ingredients: null,
+        totalPrice: null
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let ingredientsFromParams = new URLSearchParams(this.props.location.search);
-        let parsedIngredients = {}
-        for(let [key, qty] of ingredientsFromParams.entries()){
-           parsedIngredients[key] = qty
+        let parsedIngredients = {};
+        let totalPrice = null;
+        for (let [key, qty] of ingredientsFromParams.entries()) {
+            if (key === 'totalPrice') {
+                totalPrice = qty;
+            } else {
+                parsedIngredients[key] = qty
+            }
+
         }
-        this.setState({ingredients: parsedIngredients})
+        this.setState({ ingredients: parsedIngredients, totalPrice: totalPrice })
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         //find a way to cache ingredients so user gets back to already built
         //burger when canceling instead  of starting all over again
 
@@ -33,23 +42,25 @@ class Checkout extends Component {
     }
 
     goToCheckout = () => {
-       this.props.history.replace('/checkout/contact-data')
+        this.props.history.replace('/checkout/contact-data')
 
     }
 
     cancelPurchasing = () => {
-    //    this.props.history.replace("/")
+        //    this.props.history.replace("/")
         this.props.history.goBack()
     }
-  
-    render(){
+
+    render() {
         return (
             <div>
-                <CheckoutSummary 
-                ingredients={this.state.ingredients}
-                continueCheckout={this.goToCheckout}
-                cancelPurchasing={this.cancelPurchasing}
+                <CheckoutSummary
+                    ingredients={this.state.ingredients}
+                    continueCheckout={this.goToCheckout}
+                    cancelPurchasing={this.cancelPurchasing}
                 />
+                <Route path={this.props.match.url + "/contact-data"}
+                    render={() => <ContactData ingredients={this.state.ingredients} price={+this.state.totalPrice} {...this.props}/>} />   
             </div>
         )
     }
