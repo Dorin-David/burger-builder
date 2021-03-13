@@ -26,3 +26,8 @@
     outline: none;
     background-color: #ccc;
 }
+
+.InvalidInput {
+    border: 2px solid rgb(230, 4, 4);
+    background-color: rgb(245, 178, 170);
+}
