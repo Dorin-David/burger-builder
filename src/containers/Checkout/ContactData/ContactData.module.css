@@ -4,16 +4,6 @@
     text-align: center;
 }
 
-.ContactData input {
-    display: block;
-    margin: 7px auto;
-    width: 70%;
-    border-radius: 4px;
-    padding: 7px;
-    font-size: 1.2rem;
-
-}
-
 @media (min-width: 600px){
     .ContactData {
         width: 500px;
