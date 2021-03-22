@@ -1,4 +1,5 @@
-import { ADD_INGREDIENT, REMOVE_INGREDIENT } from './actions';
+import * as actionTypes from '../actions/actionTypes'
+// import { ADD_INGREDIENT, REMOVE_INGREDIENT } from '../actions/actionTypes';
 
 
 function updatePurchaseState(ingredients) {
@@ -19,43 +20,50 @@ const INGREDIENTS_PRICES = {
 }
 
 const initialState = {
-    ingredients: {
-        salad: 0,
-        tomato: 0,
-        cheese: 0,
-        meat: 0,
-        bacon: 0,
-    },
+    ingredients: null,
     totalPrice: 4,
-    purchasable: false
+    purchasable: false,
+    error: false
 }
 
 
 const ingredientsReducer = (state = initialState, action) => {
-    const { type, ingredient } = action;
+    // const { type, ingredient } = action;
 
-    switch (type) {
-        case ADD_INGREDIENT:
+    switch (action.type) {
+        case actionTypes.ADD_INGREDIENT:
             return {
                 ...state,
                 ingredients: {
                     ...state.ingredients,
-                    [ingredient]: state.ingredients[ingredient] + 1
+                    [action.ingredient]: state.ingredients[action.ingredient] + 1
                 },
-               totalPrice: state.totalPrice + INGREDIENTS_PRICES[ingredient],
+               totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredient],
                purchasable: updatePurchaseState(state.ingredients)
             }
 
-        case REMOVE_INGREDIENT:
+        case actionTypes.REMOVE_INGREDIENT:
             return {
                 ...state,
                 ingredients: {
                     ...state.ingredients,
-                    [ingredient]: state.ingredients[ingredient] - 1
+                    [action.ingredient]: state.ingredients[action.ingredient] - 1
                 },
-                totalPrice: state.totalPrice - INGREDIENTS_PRICES[ingredient],
+                totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredient],
                 purchasable: updatePurchaseState(state.ingredients)
             }
+        case actionTypes.SET_INGREDIENTS:
+            return {
+                ...state,
+                ingredients: action.ingredients,
+                error: false
+            }
+
+        case actionTypes.SET_FETCH_ERROR: 
+          return {
+              ...state,
+              error: true
+          }
 
         default:
             return state
