@@ -1,13 +1,22 @@
 import * as actionTypes from '../actions/actionTypes'
-// import { ADD_INGREDIENT, REMOVE_INGREDIENT } from '../actions/actionTypes';
-
 
 function updatePurchaseState(ingredients) {
     const ingredientsCopy = {
         ...ingredients
     }
     const ingredientsTotal = Object.keys(ingredientsCopy).reduce((accum, item) => accum + ingredientsCopy[item], 0);
-    return  ingredientsTotal > 0
+    return ingredientsTotal > 0
+}
+
+//helper function thats uses destructuring for adjusting the order of the ingredients received from the database (originally sorted alphabetically)
+function adjustIngredientsOrder({ salad, tomato, bacon, cheese, meat }) {
+    return {
+        salad,
+        tomato,
+        cheese,
+        bacon,
+        meat
+    }
 }
 
 
@@ -28,7 +37,6 @@ const initialState = {
 
 
 const ingredientsReducer = (state = initialState, action) => {
-    // const { type, ingredient } = action;
 
     switch (action.type) {
         case actionTypes.ADD_INGREDIENT:
@@ -38,8 +46,8 @@ const ingredientsReducer = (state = initialState, action) => {
                     ...state.ingredients,
                     [action.ingredient]: state.ingredients[action.ingredient] + 1
                 },
-               totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredient],
-               purchasable: updatePurchaseState(state.ingredients)
+                totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredient],
+                purchasable: updatePurchaseState(state.ingredients)
             }
 
         case actionTypes.REMOVE_INGREDIENT:
@@ -55,15 +63,15 @@ const ingredientsReducer = (state = initialState, action) => {
         case actionTypes.SET_INGREDIENTS:
             return {
                 ...state,
-                ingredients: action.ingredients,
+                ingredients: adjustIngredientsOrder(action.ingredients),
                 error: false
             }
 
-        case actionTypes.SET_FETCH_ERROR: 
-          return {
-              ...state,
-              error: true
-          }
+        case actionTypes.SET_FETCH_ERROR:
+            return {
+                ...state,
+                error: true
+            }
 
         default:
             return state
