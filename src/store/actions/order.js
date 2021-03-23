@@ -18,6 +18,10 @@ const purchaseBurgerFail = error => ({
     error
 })
 
+export const initPurchase = () => ({
+    type: actionTypes.PURCHASE_INIT
+})
+
 export const purchaseBurger = (orderData) => {
     return dispatch => {
         dispatch(purchaseBurgerStart())

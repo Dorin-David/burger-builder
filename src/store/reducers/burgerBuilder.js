@@ -64,6 +64,7 @@ const ingredientsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 ingredients: adjustIngredientsOrder(action.ingredients),
+                totalPrice: 4,
                 error: false
             }
 
