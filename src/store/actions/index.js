@@ -1,7 +1,9 @@
 export {
     addIngredient,
     removeIngredient,
-    setIngredients,
     initIngredients,
-    setFetchIngredientsError
 } from './burgerBuilder'
+
+export {
+    purchaseBurger
+} from './order'

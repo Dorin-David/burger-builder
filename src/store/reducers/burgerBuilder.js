@@ -47,7 +47,7 @@ const ingredientsReducer = (state = initialState, action) => {
                     [action.ingredient]: state.ingredients[action.ingredient] + 1
                 },
                 totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredient],
-                purchasable: updatePurchaseState(state.ingredients)
+                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] + 1})
             }
 
         case actionTypes.REMOVE_INGREDIENT:
@@ -58,7 +58,7 @@ const ingredientsReducer = (state = initialState, action) => {
                     [action.ingredient]: state.ingredients[action.ingredient] - 1
                 },
                 totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredient],
-                purchasable: updatePurchaseState(state.ingredients)
+                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] - 1})
             }
         case actionTypes.SET_INGREDIENTS:
             return {
@@ -67,7 +67,7 @@ const ingredientsReducer = (state = initialState, action) => {
                 error: false
             }
 
-        case actionTypes.SET_FETCH_ERROR:
+        case actionTypes.SET_FETCH_INGREDIENT_ERROR:
             return {
                 ...state,
                 error: true

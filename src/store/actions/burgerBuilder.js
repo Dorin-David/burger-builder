@@ -17,7 +17,7 @@ const setIngredients = ingredients => ({
 })
 
 const setFetchIngredientsError = () => ({
-    type: actionTypes.SET_FETCH_ERROR,
+    type: actionTypes.SET_FETCH_INGREDIENT_ERROR,
 })
 
 const initIngredients = () => {
