@@ -110,6 +110,7 @@ class ContactData extends Component {
     }
 
     validateValue(value, rules) {
+        //add logic for validation, bot in Auth and in ContactData
         let isValid = true;
 
         if (rules.required) {

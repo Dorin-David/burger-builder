@@ -83,7 +83,7 @@ const mapStateToProp = state => ({
     error: state.burgerRdx.error
 })
 
-const dispatchToProps = dispatch => ({
+const mapDispatchToProps = dispatch => ({
     addIngredient: (ingredient) => dispatch(actions.addIngredient(ingredient)),
     removeIngredient: (ingredient) => dispatch(actions.removeIngredient(ingredient)),
     initIngredients: () => dispatch(actions.initIngredients()),
@@ -91,4 +91,4 @@ const dispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProp, dispatchToProps)(withErrorHandler(BurgerBuilder, axios))
+export default connect(mapStateToProp, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios))
