@@ -6,28 +6,20 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../components/hoc/withErrorHandler/withErrorHandler';
-import {ADD_INGREDIENT, REMOVE_INGREDIENT} from '../../store/actions';
+import * as actions from '../../store/actions/index';
 import {connect} from 'react-redux';
+
 
 
 class BurgerBuilder extends Component {
 
     state = {
         purchasing: false,
-        loading: false,
-        error: false
     }
     componentDidMount() {
-        //postpone dynamic ingredients retrieving for async redux
-
-        // axios.get('https://react-burger-builder-7e9c0-default-rtdb.firebaseio.com/ingredients.json')
-        //     .then(res => {
-        //         this.setState({ ingredients: res.data })
-        //     })
-        //     .catch(err => {
-        //         this.setState({ error: true })
-        //     })
+       this.props.initIngredients()
     }
+    
     purchaseHandler = () => {
         this.setState({ purchasing: true })
     }
@@ -37,6 +29,7 @@ class BurgerBuilder extends Component {
     }
 
     continuePurchasing = () => { 
+        this.props.initPurchase()
         this.props.history.push('/checkout')
     }
 
@@ -71,9 +64,6 @@ class BurgerBuilder extends Component {
                 totalPrice={this.props.totalPrice}
             />)
         }
-        if (this.state.loading) {
-            orderSummary = <Spinner />
-        }
 
         return (
             <Fragment>
@@ -87,14 +77,17 @@ class BurgerBuilder extends Component {
 }
 
 const mapStateToProp = state => ({
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
-    purchasable: state.purchasable
+    ingredients: state.burgerRdx.ingredients,
+    totalPrice: state.burgerRdx.totalPrice,
+    purchasable: state.burgerRdx.purchasable,
+    error: state.burgerRdx.error
 })
 
 const dispatchToProps = dispatch => ({
-    addIngredient: (ingredient) => dispatch({type: ADD_INGREDIENT, ingredient}),
-    removeIngredient: (ingredient) => dispatch({type: REMOVE_INGREDIENT, ingredient})
+    addIngredient: (ingredient) => dispatch(actions.addIngredient(ingredient)),
+    removeIngredient: (ingredient) => dispatch(actions.removeIngredient(ingredient)),
+    initIngredients: () => dispatch(actions.initIngredients()),
+    initPurchase: () => dispatch(actions.initPurchase())
 })
 
 
