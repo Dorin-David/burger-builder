@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import style from './Auth.module.css';
 import * as actions from '../../store/actions/index';
 
@@ -39,7 +40,8 @@ class Auth extends Component {
                 triggered: false
             },
         },
-        isSignedUp: true
+        isSignedUp: true,
+        isFormValid: false
     }
 
 
@@ -68,16 +70,16 @@ class Auth extends Component {
         updatedValue.triggered = true;
         copyForm[id] = updatedValue;
 
-        //postpone formValidation
-        // let isFormValid = true;
 
-        // for (let key in copyForm) {
-        //     isFormValid = copyForm[key].valid && isFormValid
-        // }
+        let isFormValid = true;
+
+        for (let key in copyForm) {
+            isFormValid = copyForm[key].valid && isFormValid
+        }
 
         this.setState({
             controls: copyForm,
-            // isFormValid
+            isFormValid
         })
     }
 
@@ -99,7 +101,7 @@ class Auth extends Component {
         for (let key in this.state.controls) {
             formElements.push({ key, data: this.state.controls[key] })
         }
-        const generateForms = formElements.map(form => {
+        let generateForms = formElements.map(form => {
             return (
                 <Input
                     key={form.key}
@@ -114,11 +116,24 @@ class Auth extends Component {
             )
         })
 
+
+        if (this.props.loading) {
+            generateForms = <Spinner />
+        }
+
+        let errorMessage = null;
+        if (this.props.error) {
+            errorMessage = <p className={style.ErrorMessage}>
+                {this.props.error.message}</p>
+        }
         return (
             <div className={style.AuthData}>
                 <form onSubmit={this.submitHandler}>
                     {generateForms}
-                    <Button btnType='Success'>SUBMIT</Button>
+                    {errorMessage}
+                    <Button
+                        btnType={this.state.isFormValid ? 'Success' : 'Disabled'}
+                        disabled={!this.state.isFormValid}>SUBMIT</Button>
                     <Button
                         click={this.switchAuthMode}
                         btnType='Danger'
@@ -130,8 +145,13 @@ class Auth extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    loading: state.authRdx.loading,
+    error: state.authRdx.error
+})
+
 const mapDispatchToProps = dispatch => ({
     authenticateUser: (email, password, isSignedUp) => dispatch(actions.auth(email, password, isSignedUp))
 })
 
-export default connect(null, mapDispatchToProps)(Auth)
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)

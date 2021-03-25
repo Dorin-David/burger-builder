@@ -40,7 +40,7 @@ export const auth = (email, password, isSignedUp) => {
         })
         .catch(rej => {
             console.log(rej)
-            dispatch(authFail(rej))
+            dispatch(authFail(rej.response.data.error))
         })
     }
 }

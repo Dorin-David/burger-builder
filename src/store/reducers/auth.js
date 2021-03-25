@@ -1,5 +1,15 @@
 import * as actionTypes from '../actions/actionTypes';
 
+
+function handleErrorMessage(error){
+    const coustomMessages = {
+        'INVALID_EMAIL': 'Sorry, your email is invalid',
+        'EMAIL_EXISTS': 'Sorry, your email is already taken'
+    }
+    console.log(error.message)
+    return error
+}
+
 const initialState = {
     token: null,
     userId: null,
@@ -26,7 +36,7 @@ const authReducer = (state = initialState, action) => {
         case actionTypes.AUTH_FAIL:
             return {
                ...state,
-                error: action.error,
+                error: handleErrorMessage(action.error),
                 loading: false,        
             }
         default:
