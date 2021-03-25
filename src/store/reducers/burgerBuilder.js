@@ -32,7 +32,8 @@ const initialState = {
     ingredients: null,
     totalPrice: 4,
     purchasable: false,
-    error: false
+    error: false,
+    buildingBurger: false
 }
 
 
@@ -47,7 +48,8 @@ const ingredientsReducer = (state = initialState, action) => {
                     [action.ingredient]: state.ingredients[action.ingredient] + 1
                 },
                 totalPrice: state.totalPrice + INGREDIENTS_PRICES[action.ingredient],
-                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] + 1})
+                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] + 1}),
+                buildingBurger: true
             }
 
         case actionTypes.REMOVE_INGREDIENT:
@@ -58,14 +60,16 @@ const ingredientsReducer = (state = initialState, action) => {
                     [action.ingredient]: state.ingredients[action.ingredient] - 1
                 },
                 totalPrice: state.totalPrice - INGREDIENTS_PRICES[action.ingredient],
-                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] - 1})
+                purchasable: updatePurchaseState({...state.ingredients,  [action.ingredient]: state.ingredients[action.ingredient] - 1}),
+                buildingBurger: true
             }
         case actionTypes.SET_INGREDIENTS:
             return {
                 ...state,
                 ingredients: adjustIngredientsOrder(action.ingredients),
                 totalPrice: 4,
-                error: false
+                error: false,
+                buildingBurger: false
             }
 
         case actionTypes.SET_FETCH_INGREDIENT_ERROR:

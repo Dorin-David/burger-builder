@@ -5,6 +5,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import classes from './ContactData.module.css';
 import axios from '../../../axios-orders';
 import Input from '../../../components/UI/Input/Input';
+import { validateFormValue } from '../../../authUtils';
 import withErrorHandler from '../../../components/hoc/withErrorHandler/withErrorHandler';
 import * as orderActions from '../../../store/actions/index';
 
@@ -22,8 +23,7 @@ class ContactData extends Component {
                     required: true,
                 },
                 valid: false,
-                triggered: false
-
+                triggered: false,
             },
             street: {
                 elementType: 'input',
@@ -36,21 +36,21 @@ class ContactData extends Component {
                     required: true
                 },
                 valid: false,
-                triggered: false
+                triggered: false,
             },
-            zipCode: {
+            postCode: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'ZIP Code'
+                    placeholder: 'Post Code'
                 },
                 value: '',
                 validation: {
                     required: true,
-                    minLength: 5,
+                    isPostalCode: true
                 },
                 valid: false,
-                triggered: false
+                triggered: false,
             },
             country: {
                 elementType: 'input',
@@ -60,10 +60,11 @@ class ContactData extends Component {
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    isCountry: true
                 },
                 valid: false,
-                triggered: false
+                triggered: false,
             },
             email: {
                 elementType: 'input',
@@ -76,7 +77,7 @@ class ContactData extends Component {
                     required: true
                 },
                 valid: false,
-                triggered: false
+                triggered: false,
             },
             deliveryType: {
                 elementType: 'select',
@@ -106,21 +107,8 @@ class ContactData extends Component {
             orderData: formData
         }
 
-        this.props.orderBurger(currentOrder)
+        this.props.orderBurger(currentOrder, this.props.token)
     }
-
-    validateValue(value, rules) {
-        let isValid = true;
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid
-        }
-        if (rules.minLength) {
-            isValid = value.length === rules.minLength && isValid
-        }
-        return isValid
-    }
-
 
     handleInputChange = (event, id) => {
         let copyForm = {
@@ -130,7 +118,7 @@ class ContactData extends Component {
             ...copyForm[id]
         }
         updatedValue.value = event.target.value;
-        updatedValue.valid = this.validateValue(updatedValue.value, updatedValue.validation)
+        updatedValue.valid = validateFormValue(updatedValue.value, updatedValue.validation)
         updatedValue.triggered = true;
         copyForm[id] = updatedValue;
 
@@ -188,11 +176,12 @@ class ContactData extends Component {
 const mapStateToProp = state => ({
     ingredients: state.burgerRdx.ingredients,
     totalPrice: state.burgerRdx.totalPrice,
-    loading: state.orderRdx.loading
+    loading: state.orderRdx.loading,
+    token: state.authRdx.token
 })
 
 const dispatchToProps = dispatch => ({
-    orderBurger: (orderData) => dispatch(orderActions.purchaseBurger(orderData))
+    orderBurger: (orderData, token) => dispatch(orderActions.purchaseBurger(orderData, token))
 })
 
 export default connect(mapStateToProp, dispatchToProps)(withErrorHandler(ContactData, axios))

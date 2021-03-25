@@ -1,4 +1,4 @@
-.ContactData {
+.AuthData {
     margin: 20px auto;
     width: 80%;
     text-align: center;
@@ -8,8 +8,13 @@
     box-sizing: border-box;
 }
 
+.ErrorMessage {
+    color: rgb(226, 46, 46);
+    margin-bottom: 0;
+}
+
 @media (min-width: 600px){
-    .ContactData {
+    .AuthData {
         width: 500px;
     }
 }
