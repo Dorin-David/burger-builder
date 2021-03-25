@@ -19,6 +19,19 @@ export const authFail = error => ({
     error
 })
 
+export const logout = () => ({
+    type: actionTypes.AUTH_LOGOUT
+})
+
+//implement auto logout when token expires
+export const checkAuthTimeout = expirationTime => {
+    return dispatch => {
+      setTimeout(() => {
+          dispatch(logout())
+      }, expirationTime * 1000);
+    }
+}
+
 export const auth = (email, password, isSignedUp) => {
     return dispatch => {
         dispatch(authStart()) 
@@ -35,11 +48,12 @@ export const auth = (email, password, isSignedUp) => {
         }
         axios.post(url, authData)
         .then(res => {
-            console.log(res)
+            // console.log(res)
             dispatch(authSuccess(res.data.idToken, res.data.localId))
+            dispatch(checkAuthTimeout(res.data.expiresIn))
         })
         .catch(rej => {
-            console.log(rej)
+            // console.log(rej)
             dispatch(authFail(rej.response.data.error))
         })
     }

@@ -1,14 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
+import { handleErrorMessage } from '../../authUtils';
 
-
-function handleErrorMessage(error){
-    const coustomMessages = {
-        'INVALID_EMAIL': 'Sorry, your email is invalid',
-        'EMAIL_EXISTS': 'Sorry, your email is already taken'
-    }
-    console.log(error.message)
-    return error
-}
 
 const initialState = {
     token: null,
@@ -18,6 +10,7 @@ const initialState = {
 }
 
 const authReducer = (state = initialState, action) => {
+    
     switch (action.type) {
         case actionTypes.AUTH_START:
             return {
@@ -39,6 +32,12 @@ const authReducer = (state = initialState, action) => {
                 error: handleErrorMessage(action.error),
                 loading: false,        
             }
+        case actionTypes.AUTH_LOGOUT: 
+        return {
+            ...state,
+            token: null,
+            userId: null
+        }
         default:
             return state
     }

@@ -16,10 +16,13 @@
 }
 
 .Success {
+    margin-bottom: 0;
     color: #5C9210;
+    
 }
 
 .Danger {
+    margin-top: 0;
     color: #944317;
 }
 

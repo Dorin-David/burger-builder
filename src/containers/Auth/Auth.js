@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import { validateFormValue } from '../../authUtils';
 import style from './Auth.module.css';
 import * as actions from '../../store/actions/index';
 
@@ -33,29 +34,15 @@ class Auth extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    minLength: 6
-                    //ad regex validation here
+                    minLength: 6,
+                    isAlphaNumeric: false
                 },
                 valid: false,
                 triggered: false
             },
         },
         isSignedUp: true,
-        isFormValid: false
-    }
-
-
-    validateValue(value, rules) {
-        //add logic for validation, bot in Auth and in ContactData
-        let isValid = true;
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid
-        }
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid
-        }
-        return isValid
+        isFormValid: false,
     }
 
     handleInputChange = (event, id) => {
@@ -66,7 +53,7 @@ class Auth extends Component {
             ...copyForm[id]
         }
         updatedValue.value = event.target.value;
-        updatedValue.valid = this.validateValue(updatedValue.value, updatedValue.validation)
+        updatedValue.valid = validateFormValue(updatedValue.value, updatedValue.validation)
         updatedValue.triggered = true;
         copyForm[id] = updatedValue;
 
@@ -79,7 +66,8 @@ class Auth extends Component {
 
         this.setState({
             controls: copyForm,
-            isFormValid
+            isFormValid,
+            errorMessage: null
         })
     }
 
@@ -122,9 +110,9 @@ class Auth extends Component {
         }
 
         let errorMessage = null;
-        if (this.props.error) {
+        if (this.props.error && !this.props.loading) {
             errorMessage = <p className={style.ErrorMessage}>
-                {this.props.error.message}</p>
+                {this.props.error}</p>
         }
         return (
             <div className={style.AuthData}>
@@ -134,11 +122,11 @@ class Auth extends Component {
                     <Button
                         btnType={this.state.isFormValid ? 'Success' : 'Disabled'}
                         disabled={!this.state.isFormValid}>SUBMIT</Button>
-                    <Button
+                </form>
+                <Button
                         click={this.switchAuthMode}
                         btnType='Danger'
                     >SWITCH TO {this.state.isSignedUp ? ' SIGN IN' : ' SIGN UP'}</Button>
-                </form>
             </div>
         )
 
