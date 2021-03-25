@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -114,9 +115,14 @@ class Auth extends Component {
             errorMessage = <p className={style.ErrorMessage}>
                 {this.props.error}</p>
         }
+        let authRedirect = null;
+        if(this.props.isUserAuthenticated){
+            authRedirect = this.props.buildingBurger ? <Redirect to="/checkout"/> : <Redirect to="/"/>
+        }
         return (
             <div className={style.AuthData}>
                 <form onSubmit={this.submitHandler}>
+                    {authRedirect}
                     {generateForms}
                     {errorMessage}
                     <Button
@@ -135,7 +141,9 @@ class Auth extends Component {
 
 const mapStateToProps = state => ({
     loading: state.authRdx.loading,
-    error: state.authRdx.error
+    error: state.authRdx.error,
+    isUserAuthenticated: state.authRdx.token !== null,
+    buildingBurger: state.burgerRdx.buildingBurger
 })
 
 const mapDispatchToProps = dispatch => ({

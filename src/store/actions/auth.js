@@ -48,12 +48,10 @@ export const auth = (email, password, isSignedUp) => {
         }
         axios.post(url, authData)
         .then(res => {
-            // console.log(res)
             dispatch(authSuccess(res.data.idToken, res.data.localId))
             dispatch(checkAuthTimeout(res.data.expiresIn))
         })
         .catch(rej => {
-            // console.log(rej)
             dispatch(authFail(rej.response.data.error))
         })
     }
