@@ -46,6 +46,12 @@ class Auth extends Component {
         isFormValid: false,
     }
 
+    componentDidMount(){
+       if(!this.props.buildingBurger && this.props.authRedirectPath !== '/'){
+           this.props.setAuthRedirectPath()
+       }
+    }
+
     handleInputChange = (event, id) => {
         let copyForm = {
             ...this.state.controls
@@ -76,7 +82,7 @@ class Auth extends Component {
         event.preventDefault()
         const email = this.state.controls.email.value;
         const password = this.state.controls.password.value;
-        this.props.authenticateUser(email, password, this.state.isSignedUp)
+        this.props.authenticateUser(email, password, this.state.isSignedUp);
     }
 
     switchAuthMode = () => {
@@ -115,10 +121,20 @@ class Auth extends Component {
             errorMessage = <p className={style.ErrorMessage}>
                 {this.props.error}</p>
         }
+
         let authRedirect = null;
         if(this.props.isUserAuthenticated){
-            authRedirect = this.props.buildingBurger ? <Redirect to="/checkout"/> : <Redirect to="/"/>
+            authRedirect = <Redirect to={this.props.authRedirectPath}/>
         }
+        // let authRedirect = null;
+        // if(this.props.isUserAuthenticated){
+        //     authRedirect = this.props.buildingBurger ? <Redirect to="/checkout"/> : <Redirect to="/"/>
+        // }
+        // if(this.props.isUserAuthenticated && this.props.buildingBurger){
+        //     authRedirect = <Redirect to='/checkout'/>
+        // } else if(this.props.isUserAuthenticated){
+        //     authRedirect = <Redirect to={this.props.authRedirectPath}/> 
+        // }
         return (
             <div className={style.AuthData}>
                 <form onSubmit={this.submitHandler}>
@@ -143,11 +159,13 @@ const mapStateToProps = state => ({
     loading: state.authRdx.loading,
     error: state.authRdx.error,
     isUserAuthenticated: state.authRdx.token !== null,
-    buildingBurger: state.burgerRdx.buildingBurger
+    buildingBurger: state.burgerRdx.buildingBurger,
+    authRedirectPath: state.authRdx.authRedirectPath
 })
 
 const mapDispatchToProps = dispatch => ({
-    authenticateUser: (email, password, isSignedUp) => dispatch(actions.auth(email, password, isSignedUp))
+    authenticateUser: (email, password, isSignedUp) => dispatch(actions.auth(email, password, isSignedUp)),
+    setAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth)
