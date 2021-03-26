@@ -104,7 +104,8 @@ class ContactData extends Component {
         const currentOrder = {
             ingredients: this.props.ingredients,
             price: this.props.totalPrice.toFixed(2),
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
 
         this.props.orderBurger(currentOrder, this.props.token)
@@ -177,7 +178,8 @@ const mapStateToProp = state => ({
     ingredients: state.burgerRdx.ingredients,
     totalPrice: state.burgerRdx.totalPrice,
     loading: state.orderRdx.loading,
-    token: state.authRdx.token
+    token: state.authRdx.token,
+    userId: state.authRdx.userId
 })
 
 const dispatchToProps = dispatch => ({
